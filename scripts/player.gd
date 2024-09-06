@@ -37,15 +37,7 @@ func update_anims(vel):
 		anim_handler.play(form + "_run")
 		
 
-func shoot():
-	###########################################################
-	# const BULLET_BLUEPRINT = preload("res://scenes/bullet.tscn")
-	# var new_bullet = BULLET_BLUEPRINT.instantiate()
-	# In this case, this line was not needed: Maybe sprite?
-	# new_bullet.global_position = sprite.global_position
-	# sprite.add_child(new_bullet)
-	###########################################################
-	
+func shoot():	
 	# set target_pos to the mouse position
 	target_pos = get_global_mouse_position()
 	# instance of the bullet scene
