@@ -6,6 +6,7 @@ extends CharacterBody2D
 var form = "base"
 # declare variable for the mouse pos
 var target_pos : Vector2
+var flipped: bool
 # get the bullet preloaded scene
 const BULLET_BLUEPRINT = preload("res://scenes/bullet.tscn")
 
@@ -16,7 +17,13 @@ func _physics_process(delta: float) -> void:
 	var x_dir = Input.get_axis("left","right")
 	
 	if x_dir != 0:
-		sprite.flip_h = (x_dir == -1)
+		if x_dir > 0 and flipped:
+			scale.x *= -1
+			flipped = false
+		elif x_dir < 0 and !flipped:
+			scale.x *= -1
+			flipped = true
+		
 		
 	if Input.is_key_pressed(KEY_1):
 		form = "base"
@@ -50,4 +57,5 @@ func shoot():
 	get_parent().add_child(new_bullet)
 
 func _on_timer_timeout() -> void:
-	shoot()
+	#shoot()
+	pass

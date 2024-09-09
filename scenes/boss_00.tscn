@@ -1,0 +1,99 @@
+[gd_scene load_steps=12 format=3 uid="uid://nx2t7xl85hhv"]
+
+[ext_resource type="Script" path="res://scripts/boss_00.gd" id="1_hfwq2"]
+[ext_resource type="Texture2D" uid="uid://cw6frdgohaqly" path="res://sprites/Boss001_spritesheet.png" id="1_j84nw"]
+[ext_resource type="Script" path="res://scripts/ia.gd" id="2_sltwo"]
+[ext_resource type="Script" path="res://scripts/state.gd" id="3_17m71"]
+[ext_resource type="Script" path="res://scripts/idle.gd" id="4_hbhg2"]
+[ext_resource type="Script" path="res://scripts/follow.gd" id="5_qibs0"]
+
+[sub_resource type="Animation" id="Animation_2o8c1"]
+length = 0.001
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_4sf1u"]
+resource_name = "idle"
+length = 1.2
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_h7s5d"]
+_data = {
+"RESET": SubResource("Animation_2o8c1"),
+"idle": SubResource("Animation_4sf1u")
+}
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2paee"]
+radius = 46.0
+height = 136.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kxi4j"]
+radius = 372.109
+
+[node name="Boss00" type="CharacterBody2D"]
+script = ExtResource("1_hfwq2")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(32, 0)
+texture = ExtResource("1_j84nw")
+hframes = 5
+vframes = 3
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+root_node = NodePath("../Sprite2D")
+libraries = {
+"": SubResource("AnimationLibrary_h7s5d")
+}
+autoplay = "idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(24, 25)
+rotation = -1.5708
+shape = SubResource("CapsuleShape2D_2paee")
+
+[node name="PlayerDetection" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="PlayerDetection"]
+position = Vector2(-34, 16)
+shape = SubResource("CircleShape2D_kxi4j")
+
+[node name="IA" type="Node2D" parent="."]
+script = ExtResource("2_sltwo")
+
+[node name="Idle" type="Node2D" parent="IA"]
+script = ExtResource("4_hbhg2")
+
+[node name="Attack" type="Node2D" parent="IA"]
+script = ExtResource("3_17m71")
+
+[node name="Follow" type="Node2D" parent="IA"]
+script = ExtResource("5_qibs0")
+
+[node name="Death" type="Node2D" parent="IA"]
+script = ExtResource("3_17m71")
+
+[connection signal="body_entered" from="PlayerDetection" to="IA/Idle" method="_on_player_detection_body_entered"]
